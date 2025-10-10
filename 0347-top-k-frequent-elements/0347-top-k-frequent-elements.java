@@ -7,22 +7,16 @@ class Solution {
             mpp.put(num, mpp.getOrDefault(num,0)+1);
         }
 
-        List<Integer> res = mpp.entrySet().stream()
-            // Sort by the map value (frequency) in descending order
-            // The method comparingByValue().reversed() achieves the descending sort.
-            .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
-            
-            // Map the entry back to the key (the number itself)
-            .map(Map.Entry::getKey)
-            
-            // Limit the list to the top k elements
-            .limit(k)
-            
-            // Collect into a List<Integer>
-            .collect(Collectors.toList());
+        // solving using min-heap approach
+        PriorityQueue<Integer> minheap = new PriorityQueue<>((a,b)->mpp.get(a)-mpp.get(b));
 
-        for(int i=0;i<res.size();i++){
-            ans[i]=res.get(i);
+        for(int val: mpp.keySet()){
+            minheap.add(val);
+            if(minheap.size()>k) minheap.poll();
+        }
+
+        for(int i=k-1;i>=0;i--){
+            ans[i]=minheap.poll();
         }
 
         return ans;
